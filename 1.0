@@ -1,0 +1,537 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define jumlah 9
+#define isi 100
+
+//global struct
+struct cari{
+	struct cari *leftPtr;
+	int data;
+	struct cari *rightPtr;
+};
+
+struct node
+{
+	int	data;
+	struct node	*link;
+};
+
+//typedef
+typedef struct cari Treenode;
+typedef Treenode *Treenodeptr;
+
+//function prototype
+void display(int arr[], int n);
+void sorting(int arr[],int n);
+void displayturun(int arr[], int n);
+void bubblesort(int arr[], int len);
+void rating(int arr[], int n);
+void masukindata(Treenodeptr *treePtr,int nilai);
+void urut(Treenodeptr treeptr);
+
+/*
+void insert( ListPtr *sPtr, char value );
+void printList( ListPtr currentPtr );
+*/
+void add_at_end(struct node *head, int data);
+void add_at_pos(struct node *head, int data, int pos);
+
+void del_at_end(struct node *head);
+void del_at_pos(struct node *head, int pos);
+
+//main function
+int main() {
+
+//local struct
+	struct node *head;
+//	struct node *current;
+//	struct node *previous;
+	
+//local variable
+	int choice;
+	char item;
+	
+	int opsi, batas, sum;
+	int i, k, c, e = 0;
+	int *arraykonsumsikalori;
+	int *ratingkalori;
+	int *arraykategorisasikalori;
+	char database[isi][jumlah] = {"Susu", "Cola", "Sprite", "Ayam", "Sapi", "Burger", "Jamur", "Kentang", "Wortel"};
+	int isidatabase[9]= {42, 38, 39, 239, 250, 295, 22, 86, 41};
+	char search[50];
+	
+	
+//do loop	
+	do {
+		
+		printf("Selamat Datang di Program Penghitung Kalori\n\n");
+		printf("1. Penghitung Kalori\n");
+		printf("2. Rating Kalori\n");
+		printf("3. Database Kalori\n");
+		printf("4. Panduan Pengguna\n");
+		printf("5. Edit Database Kalori\n");
+		printf("6. Rating Kalori menggunakan binary search tree\n");
+		printf("0. Keluar Program\n");
+		printf("\nOpsi: ");
+		
+		scanf("%d", &opsi);
+
+//switch-case statement		
+		switch (opsi) {
+			
+			case 1:
+					system("CLS");
+					printf("Perhitungan Jumlah Konsumsi Kalori per Hari\n\n");
+					printf("Banyak konsumsi kalori akan diberikan rating sebagai berikut\n\nTinggi = > 2200 \nSedang = 1800 - 2200\nRendah = < 1800");
+					printf("\n\nMasukkan banyak item yang dikonsumsi oleh Anda: ");
+					scanf("%d", &batas);
+					printf("\n");
+					
+					arraykonsumsikalori = (int*) malloc(batas * sizeof(int));
+					
+					for (i = 0; i < batas; i ++) {
+						
+						printf("Masukkan banyak kalori yang diterima per item (setiap 100 gram): ");
+						scanf("%d", &arraykonsumsikalori[i]);
+					}
+					
+					printf("\nBerikut daftar konsumsi kalori Anda\n\n");
+					display(arraykonsumsikalori, batas);
+					printf("\n\nBerikut total konsumsi kalori Anda\n");
+					
+					for (k = 0; k < batas; k ++){
+  						sum += arraykonsumsikalori[k];
+ 					}
+					
+					printf("\n%d\n", sum);
+					
+					if (sum <= 1800) {
+						printf("\nKonsumsi kalori Anda tergolong rendah\n");
+						printf("\nTambahkan %d kalori agar memenuhi kriteria\n\n", 1800 - sum);
+					} else if(sum > 1800 && sum <= 2200){
+						printf("\nKonsumsi kalori Anda tergolong cukup\n\n");
+					} else if(sum > 2200){
+						printf("\nKonsumsi kalori Anda tergolong tinggi\n");
+						printf("\nKurangi %d kalori agar memenuhi kriteria\n\n", sum - 2200);
+					}
+					
+					system("Pause");
+					system("CLS");
+					
+					break;
+					
+			case 2:
+					system("CLS");
+					printf("Kategorisasi Kalori\n\n");
+					printf("Masukkan banyak item yang ingin diberikan kategori: ");
+					scanf("%d", &batas);
+					
+					printf("\n");
+					
+					arraykategorisasikalori = (int*) malloc(batas * sizeof(int));
+					
+					for (i = 0; i < batas; i ++) {
+						printf("Masukkan besar kalori: ");
+						scanf("%d", &arraykategorisasikalori[i]);
+					}
+					
+					bubblesort(arraykategorisasikalori, batas);
+					
+					printf("\nberikut kalori yang sudah diurutkan\n\n");
+					displayturun(arraykategorisasikalori, batas);
+					printf("\nberikut rating dari kandungan kalori yang ada\n\n");
+					rating(arraykategorisasikalori, batas);
+					
+					printf("\n");
+					
+					system("Pause");
+					system("CLS");
+					
+					break;
+					
+			case 3:
+				
+					system("CLS");
+					printf("\nSelamat Datang di Program Pencari Kalori\n");
+					printf("\nDatabase kalori yang tersedia adalah sebagai berikut ini\n\n");
+					
+					for(i = 0; i < 9; i ++) {
+						printf("%s\n", database[i]);
+					}
+					
+					printf("\nCari besar kalori yang Anda inginkan dari database kami: ");
+					scanf("%s", search);
+					
+					for (i = 0; i < 9; i ++){
+						if (strcmp(database[i], search) == 0) {
+						c = 1;
+						
+						break;
+						
+						}
+					}
+   					
+					    if(c == 1) {
+						while(e == 0) {
+							printf("\nBesar kalori dari %s adalah %d", database[i], isidatabase[i]);
+							e = 1;
+							printf("\n");
+						}
+					}
+   					 else {
+   					     printf("\n%s Item yang anda cari belum tersedia di database kami");
+					}
+					printf("\n");
+					system("Pause");
+					system("CLS");
+					
+					break;
+			
+			case 4:
+					system("CLS");
+					printf("\nProgram ini terdiri atas tiga fitur utama\n");
+					printf("\nFitur pertama adalah Perhitungan Kalori.\nIa bertujuan untuk memudahkan pengguna mengalkulasi jumlah kalori yang dikonsumsi selama sehari penuh\n");
+					printf("\nFitur selanjutnya merupakan Klasifikasi Kalori. \nHal ini memungkinkan pengguna untuk mengurutkan makanan dan minuman yang tersedia pada database kami berdasarkan nilai kalori yang telah ditentukan sebelumnya\n");
+					printf("\nFitur terakhir ialah Pencarian Kalori.\nProgram tersebut berfungsi dalam memastikan pengguna dapat melihat beserta menyeleksi makanan dan minuman dari database yang dimiliki oleh program\n");
+					printf("\nApabila pengguna ingin kembali ke menu utama, silakan klik kunci apa pun\n");
+					printf("\nAda pun jika pengguna telah selesai menggunakan program, silakan ketik angka nol setelah pesan berikut ini\n\n"); 
+					
+					system("Pause");
+					system("CLS");
+					
+					break;
+			case 5:
+					head = malloc(sizeof(struct node));
+					head->data = 42;
+					head->link = NULL;
+					add_at_end(head, 38);
+					add_at_end(head, 39);
+					add_at_end(head, 239);
+					add_at_end(head, 250);
+					add_at_end(head, 295);
+					add_at_end(head, 22);
+					add_at_end(head, 86);
+					add_at_end(head, 41);
+					
+					printf("Berikut data yang tersedia:\n42\n38\n39\n239\n250\n295\n22\n86\n41\n");
+				
+					
+					int data, position, trigger = 1;
+					
+					while(trigger != 0){
+						printf("Masukkan data anda:");
+						scanf("%d", &data);
+						printf("\n");
+						printf("Ingin menaruh data di urutan ke berapa:");
+						scanf("%d", &position);
+						printf("\n");
+						add_at_pos(head, data, position);
+						printf("Ingin meLanjutkan pengisian data (isi dengan angka 0 jika sudah selesai):");
+						scanf("%d", &trigger);	
+						printf("\n");
+					}
+					
+					system("CLS");
+
+					struct node *ptr = head;
+					printf("Berikut data setelah dimodifikasi:\n");
+					while (ptr != NULL)
+					{
+						printf("%d\n", ptr->data);
+						ptr = ptr->link;
+					}
+					printf("\n");
+					
+					system("Pause");
+					system("CLS");
+					
+					break;
+				
+			
+					
+			case 6:
+					system ("CLS");
+					
+					int item;
+					Treenodeptr rootPtr = NULL;
+					srand(time(NULL));
+					printf("Masukkan berapa banyak item yang ingin anda urutkan : ");
+					scanf("%d", &batas);
+					printf("\n");
+					
+					for (i=0;i<batas;i++){
+						printf("Masukkan besar kalori dari item yang anda inginkan : ");
+						scanf("%d",&item);
+						masukindata(&rootPtr, item);
+					}
+					
+					printf("Maka hasil pengurutannya adalah :\n");
+					urut(rootPtr);
+					printf("\n");
+					system("Pause");
+					system("CLS");
+					
+			case 0:
+					printf("\nTerima kasih telah menggunakan program\n");
+					
+					break;
+					
+			
+		}
+		
+	} while (opsi != 0);
+
+//function call
+	free(arraykonsumsikalori);
+	free(ratingkalori);
+
+	return 0;
+}
+
+//function declaration
+void display(int arr[], int n) {
+	int i;
+	for (i = 0; i < n; i++) {
+		printf("[%d] ", arr[i]);
+	}
+}
+
+
+void sorting(int arr[], int n){
+	int temp, i;
+	if(n == 1){
+		return;
+	}
+	for (i = 0; i < n - 1; i ++){
+		if (arr[i] > arr[i + 1]){
+		int temp = arr[i];
+		arr[i] = arr[i + 1];
+		arr[i + 1] = temp;
+		}
+	}
+	sorting(arr,n-1);
+}
+
+void displayturun(int arr[], int n) {
+	int i;
+	for (i = 0; i < n; i++) {
+		printf("[%d]\n", arr[i]);
+	}
+}
+
+void bubblesort(int arr[], int len){
+   int temp, i;
+
+   if (len == 1){
+      return;
+   }
+   for (i = 0; i < len-1; i++){
+      if (arr[i] < arr[i+1]){
+         temp=arr[i];
+         arr[i]=arr[i+1];
+         arr[i+1]=temp;
+      }
+   }
+   len=len-1;
+   bubblesort(arr, len);
+}
+
+void rating(int arr[], int n){
+	int i;
+	for (i = 0; i < n; i++){
+		if (arr[i] >= 100){
+			printf("%d = kalori tinggi\n", arr[i]);
+		} else if (arr[i] >= 50 && arr[i] <= 100){
+			printf("%d = kalori sedang\n", arr[i]);
+		} else if (arr[i] >= 0 && arr[i] <= 50){
+			printf("%d = kalori rendah\n", arr[i]);
+		}
+	}
+
+}
+
+void masukindata(Treenodeptr *treePtr,int nilai){
+	if (*treePtr==NULL){
+		*treePtr = malloc (sizeof(Treenode));
+		
+		if (*treePtr != NULL){
+			(*treePtr)->data = nilai;
+			(*treePtr)->leftPtr = NULL;
+			(*treePtr)->rightPtr = NULL;
+		}
+		
+		else{
+			printf("%d tidak dapat dimasukkan, tidak tersedia memori");
+		}
+	}
+	
+	else{
+		if(nilai<(*treePtr)->data){
+			masukindata(&((*treePtr)->leftPtr),nilai);
+		}
+		
+		else if (nilai >= (*treePtr)->data){
+			masukindata(&((*treePtr)->rightPtr),nilai);
+		}
+		
+	}
+}
+
+void urut(Treenodeptr treeptr){
+	if (treeptr != NULL){
+		urut(treeptr->leftPtr);
+		printf("%d  ",treeptr->data);
+		urut(treeptr->rightPtr);
+	}
+}
+/*
+void databases (){
+	List *head = malloc( sizeof( List ) );
+	head->data = 42;
+	head->nextPtr = NULL;
+	
+	List *current = malloc( sizeof( List ) );
+	current->data = 38;
+	current->nextPtr = NULL;
+	head->nextPtr = current;
+	
+	List *current2 = malloc( sizeof( List ) );
+	current->data = 39;
+	current->nextPtr = NULL;
+	head->nextPtr->nextPtr = current2;
+	
+	List *current3 = malloc( sizeof( List ) );
+	current->data = 239;
+	current->nextPtr = NULL;
+	head->nextPtr->nextPtr->nextPtr = current3;
+	
+}
+
+void insert( ListPtr *sPtr, char value )
+{
+	ListPtr newPtr; /* pointer to new node  
+	ListPtr previousPtr; /* pointer to previous node in list 
+	ListPtr currentPtr; /* pointer to current node in list 
+	
+	newPtr = malloc( sizeof( List ) );
+	if ( newPtr != NULL ) { 
+		newPtr->data = value; 
+		newPtr->nextPtr = NULL;
+		previousPtr = NULL;
+		currentPtr = *sPtr;
+	while ( currentPtr != NULL && value > currentPtr->data ) { 
+		previousPtr = currentPtr;
+		currentPtr = currentPtr->nextPtr;  
+	} 
+	
+	if ( previousPtr == NULL ) {
+		newPtr->nextPtr = *sPtr;
+		*sPtr = newPtr;
+	} 
+	else {
+		previousPtr->nextPtr = newPtr;
+		newPtr->nextPtr = currentPtr;
+		} 
+	}
+	else {
+		printf( "%c not inserted. No memory available.\n", value );
+	} 
+}
+
+void printList( ListPtr currentPtr )
+{ 
+    if ( currentPtr == NULL ) {
+      printf( "List is empty.\n\n" );
+}
+    else {
+      printf( "The list is:\n" );
+    /* while not the end of the list 
+    while ( currentPtr != NULL ) {
+      printf( "%c --> ", currentPtr->data );
+      currentPtr = currentPtr->nextPtr;
+    }
+   printf( "NULL\n\n" );
+	}
+}
+*/
+void add_at_end(struct node *head, int data)
+{
+	struct node *ptr, *temp;
+	ptr = head;
+	temp = (struct node *)malloc(sizeof(struct node));
+	temp->data = data;
+	temp->link = NULL;
+
+	while (ptr->link != NULL)
+	{
+		ptr = ptr->link;
+	}
+	ptr->link = temp;
+}
+
+void add_at_pos(struct node *head, int data, int pos)
+{
+	struct node *ptr = head;
+	struct node *ptr2 = malloc(sizeof(struct node));
+	ptr2->data = data;
+	ptr2->link = NULL;
+
+	pos--;
+	while (pos != 1)
+	{
+		ptr = ptr->link;
+		pos--;
+	}
+	ptr2->link = ptr->link;
+	ptr->link = ptr2;
+}
+
+void del_at_end(struct node *head) {
+	
+	if(head == NULL) {
+		printf("The list is already nonexistent");
+	}
+	else if(head->link == NULL) {
+		free(head);
+		head = NULL;
+	}
+	else {
+		struct node *temp = head;
+		struct node *temp2 = head;
+		while(temp->link != NULL) {
+			temp2 = temp;
+			temp = temp->link;
+		}
+		temp2->link = NULL;
+		free(temp);
+		temp = NULL;
+	}
+	
+}
+
+void del_at_pos(struct node *head, int pos) {
+	
+	struct node *current = head;
+	struct node *previous = head;
+	
+	if(head == NULL) {
+		printf("The list is already nonexistent");
+	}
+	else if (pos == 1) {
+		head = current->link;
+		free(current);
+		current = NULL;
+	}
+	else {
+		while(pos != 1) {
+			previous = current;
+			current = current->link;
+			pos -= 1;
+		}
+		previous->link = current->link;
+		free(current);
+		current = NULL;
+	}
+}
+
